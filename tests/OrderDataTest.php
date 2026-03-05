@@ -17,7 +17,11 @@ class OrderDataTest extends TestCase
         // Объект класса ValidateOrderData
         $this->obj = new ValidateOrderData();
     }
-
+       public function testValidateOrderData(): void {
+        $this->data['fio'] = "Иванов";
+        $result = $this->obj->validate($this->data);
+        $this->assertSame(true, $result);
+    }
     public function testValidateOrderData(): void {
         $this->assertSame( true, 
                            $this->obj->validate($this->data) );
