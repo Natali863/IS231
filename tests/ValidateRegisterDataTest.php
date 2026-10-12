@@ -9,18 +9,35 @@ class ValidateRegisterDataTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Гарантированно очищаем сессию для каждого теста
-        $_SESSION = [];
+        
+        // Инициализируем сессию для тестов
+        if (session_status() === PHP_SESSION_NONE) {
+            // Для CLI-тестов эмулируем сессию через массив
+            $_SESSION = [];
+        } else {
+            // Очищаем сессию перед каждым тестом
+            $_SESSION = [];
+        }
     }
 
     protected function tearDown(): void
     {
-        // Очищаем flash-сообщения и саму сессию после каждого теста
+        // Очищаем flash-сообщения после каждого теста
         unset($_SESSION['flash']);
-        $_SESSION = [];
         parent::tearDown();
     }
 
+    public function testSanitationArray()
+    {
+        $data = [
+            'username' => '<p>Ivan<br></p>',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'confirm_password' => 'password123'
+        ];
+        ValidateRegisterData::sanitationArray($data);
+        $this->assertEquals("Ivan", $data["username"]);   
+    }
     /**
      * Вспомогательный метод для получения сообщения из сессии
      */
@@ -29,7 +46,36 @@ class ValidateRegisterDataTest extends TestCase
         return $_SESSION['flash'] ?? null;
     }
 
-    
+    // ==================== Тесты на обязательные поля ====================
+
+    public function testValidateFailsWhenUsernameIsEmpty(): void
+    {
+        $data = [
+            'username' => '',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'confirm_password' => 'password123'
+        ];
+
+        $result = ValidateRegisterData::validate($data);
+
+        $this->assertFalse($result);
+        $this->assertEquals("Имя пользователя обязательно", $this->getFlashMessage());
+    }
+
+    public function testValidateFailsWhenUsernameIsMissing(): void
+    {
+        $data = [
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'confirm_password' => 'password123'
+        ];
+
+        $result = ValidateRegisterData::validate($data);
+
+        $this->assertFalse($result);
+        $this->assertEquals("Имя пользователя обязательно", $this->getFlashMessage());
+    }
 
     public function testValidateFailsWhenEmailIsEmpty(): void
     {
@@ -106,9 +152,32 @@ class ValidateRegisterDataTest extends TestCase
         $this->assertEquals("Пароли не совпадают", $this->getFlashMessage());
     }
 
-    // ==================== Тесты успешной валидации ====================
+// ==================== Тесты успешной валидации ====================
 
+    public function testValidateSucceedsWithValidDataInNonDbMode(): void
+    {       
+        $data = [
+            'username' => 'validuser',
+            'email' => 'valid@example.com',
+            'password' => 'securepass123',
+            'confirm_password' => 'securepass123'
+        ];
 
+        $result = ValidateRegisterData::validate($data);
+        $this->assertTrue($result);
+    }
 
+    public function testValidateSucceedsWithMinimalValidPassword(): void
+    {
+        $data = [
+            'username' => 'user',
+            'email' => 'u@ex.com',
+            'password' => '123456', // Ровно 6 символов
+            'confirm_password' => '123456'
+        ];
 
+        $result = ValidateRegisterData::validate($data);
+
+        $this->assertTrue($result);
+    }
 }
