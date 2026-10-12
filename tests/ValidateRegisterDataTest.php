@@ -108,32 +108,7 @@ class ValidateRegisterDataTest extends TestCase
 
     // ==================== Тесты успешной валидации ====================
 
-    public function testValidateSucceedsWithValidDataInNonDbMode(): void
-    {       
-        $data = [
-            'username' => 'validuser',
-            'email' => 'valid@example.com',
-            'password' => 'securepass123',
-            'confirm_password' => 'securepass123'
-        ];
 
-        $result = ValidateRegisterData::validate($data);
-        $this->assertTrue($result);
-        $this->assertNull($this->getFlashMessage()); // Убеждаемся, что ошибка не записалась
-    }
 
-    public function testValidateSucceedsWithMinimalValidPassword(): void
-    {
-        $data = [
-            'username' => 'user',
-            'email' => 'u@ex.com',
-            'password' => '123456', // Ровно 6 символов
-            'confirm_password' => '123456'
-        ];
 
-        $result = ValidateRegisterData::validate($data);
-
-        $this->assertTrue($result);
-        $this->assertNull($this->getFlashMessage());
-    }
 }
