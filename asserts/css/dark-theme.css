@@ -1,0 +1,46 @@
+/* Dark theme global styles */
+html, body {
+  height: 100%;
+}
+body:not(.theme-light) {
+  /* Pleasant dark gradient background */
+  background: linear-gradient(135deg, #0b0f14 0%, #111923 60%, #0b1020 100%);
+  color: #e6e6e6;
+}
+/* Links and navigation */
+body:not(.theme-light) a, body:not(.theme-light) .nav-link {
+  color: #e6e6e6 !important;
+}
+body:not(.theme-light) .navbar {
+  background-color: #0f1a1f !important;
+}
+body:not(.theme-light) .card, body:not(.theme-light) .bg-light {
+  background-color: #111 !important;
+  color: #e6e6e6 !important;
+  border-color: #333 !important;
+}
+body:not(.theme-light) .container {
+  color: #ddd;
+}
+/* Form controls */
+body:not(.theme-light) input.form-control {
+  background-color: #1a1a1a;
+  color: #e6e6e6;
+  border-color: #333;
+}
+/* Global inputs styling for all forms */
+body:not(.theme-light) input.form-control, body:not(.theme-light) textarea.form-control, body:not(.theme-light) select.form-control {
+  background-color: #1a1a1a;
+  color: #e6e6e6;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  outline: none;
+  box-shadow: 2.5px 3px 0 #000;
+}
+body:not(.theme-light) input.form-control:focus, body:not(.theme-light) textarea.form-control:focus, body:not(.theme-light) select.form-control:focus {
+  border-color: #555;
+  box-shadow: none;
+}
+/* Misc readable defaults */
+body:not(.theme-light) hr { border-color: #333; }
